@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTreeWidgetItem>
+#include "tree.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,9 +18,6 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    bool hasChild(int id);
-    void drow();
-    void getAllChild(int id, QList<QTreeWidgetItem *> &listItem, QTreeWidgetItem &item  );
 };
 
 #endif // MAINWINDOW_H

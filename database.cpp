@@ -1,5 +1,8 @@
 #include "database.h"
 
+QSqlDatabase db;
+QString nameDataBase;
+
 Database::Database()
 {
     //connect("localhost", "dev", "root", "", "mydb");
@@ -13,15 +16,28 @@ Database::~Database()
 
 QSqlQuery Database::query(QString query)
 {
+    if(!db.isOpen())
+    {
+        connect();
+    }
     QSqlQuery* my;
     my = new QSqlQuery(db);
     if(!db.isOpen())
     {
-        qDebug() << "Could not connect to database";
-        return *my;
+        if(!db.open())
+        {
+            qDebug() << "Could not connect to database";
+            qDebug() << db.lastError();
+            return *my;
+        }
+        else
+        {
+            return *my;
+        }
     }
     if(my->exec(query))
     {
+        qDebug() << my->lastQuery() << "OK";
         return *my;
     }
     else
@@ -53,5 +69,6 @@ void Database::connect()
 void Database::disconnect()
 {
     db.close();
+    db.removeDatabase(nameDataBase);
 
 }

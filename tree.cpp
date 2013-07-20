@@ -1,6 +1,5 @@
 #include "tree.h"
 
-Database database;
 Tree::Tree()
 {
     listItem = makeTree();
@@ -8,10 +7,10 @@ Tree::Tree()
 
 QList<QTreeWidgetItem*> Tree::makeTree()
 {
-    //database.connect();
-    QSqlQuery query = database.query("SELECT * FROM parent WHERE id != 1 AND pid=1");
+    QSqlQuery query = Database::query("SELECT * FROM parent WHERE id != 1 AND pid=1");
     QTreeWidgetItem *item;
-    while (query.next()) {
+    while (query.next())
+    {
         if(!hasChild(query.value("id").toInt()))
         {
             QStringList name;
@@ -24,11 +23,9 @@ QList<QTreeWidgetItem*> Tree::makeTree()
             QStringList name;
             name << query.value("name").toString();
             item = new QTreeWidgetItem(name);
-            qDebug() << query.value("id");
             makeChild(query.value("id").toInt(), listItem, *item);
         }
     }
-    database.disconnect();
     return listItem;
 }
 
@@ -37,47 +34,63 @@ QList<QTreeWidgetItem *> Tree::getListItem()
     return listItem;
 }
 
+bool Tree::hasChild(QString name)
+{
+    QSqlQuery query = Database::query("SELECT id FROM parent WHERE name='" + name + "'");
+    query.next();
+    bool result = hasChild(query.value(0).toInt());
+    return result;
+}
+
 void Tree::makeChild(int id, QList<QTreeWidgetItem *> &listItem, QTreeWidgetItem &item)
 {
+    QTreeWidgetItem *tmp;
     items.push(&item);
-        QSqlQuery query = database.query("SELECT * FROM parent WHERE pid = " + QString::number(id));
-         while (query.next()) {
-             if(!hasChild(query.value("id").toInt()))
-             {
-                 QStringList name;
-                 QTreeWidgetItem *item1;
-                 name << query.value("name").toString();
-                 item1 = new QTreeWidgetItem(name);
-                 items.last()->addChild(item1);
-             }
-             else
-             {
-                 QTreeWidgetItem *itemNext;
-                 QStringList name;
-                 name << query.value("name").toString();
-                 itemNext = new QTreeWidgetItem(name);
-                 makeChild(query.value("id").toInt(), listItem, *itemNext);
-             }
-         }
-    QTreeWidgetItem* item1;
-    item1 = items.pop();
+    QSqlQuery query = Database::query("SELECT * FROM parent WHERE pid = " + QString::number(id));
+    while (query.next())
+    {
+        if(!hasChild(query.value("id").toInt()))
+        {
+            QStringList name;
+            name << query.value("name").toString();
+            tmp = new QTreeWidgetItem(name);
+            items.last()->addChild(tmp);
+        }
+        else
+        {
+            QStringList name;
+            name << query.value("name").toString();
+            tmp = new QTreeWidgetItem(name);
+            makeChild(query.value("id").toInt(), listItem, *tmp);
+        }
+    }
+    tmp = items.pop();
     if(items.size() == 0)
     {
-        listItem.append(item1);
+        listItem.append(tmp);
     }
     else
     {
-        items.last()->addChild(item1);
+        items.last()->addChild(tmp);
     }
     return;
 }
 
 bool Tree::hasChild(int id)
 {
-    QSqlQuery query = database.query("SELECT COUNT(*) FROM parent WHERE pid=" + QString::number(id));
+    QSqlQuery query = Database::query("SELECT COUNT(*) FROM parent WHERE pid=" + QString::number(id));
     query.next();
     if(query.value(0).toInt() > 0)
+    {
         return true;
+    }
     else
+    {
         return false;
+    }
+}
+
+QSqlQueryModel Tree::printTable(QTreeWidgetItem &item, QTreeWidget &witdget)
+{
+
 }

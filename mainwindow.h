@@ -16,6 +16,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+private slots:
+    void on_actionSettings_triggered();
+
+    void on_treeWidget_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
 };

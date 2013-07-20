@@ -10,11 +10,13 @@ public:
     Tree();
     QList<QTreeWidgetItem*> makeTree();
     QList<QTreeWidgetItem*> getListItem();
+    QSqlQueryModel printTable(QTreeWidgetItem &item,  QTreeWidget &witdget);
+    static bool hasChild(QString name);
+    static bool hasChild(int id);
 
 private:
     QList<QTreeWidgetItem*> listItem;
     void makeChild(int id, QList<QTreeWidgetItem*> &listItem, QTreeWidgetItem &item  );
-    bool hasChild(int id);
     QStack<QTreeWidgetItem*> items;
 };
 

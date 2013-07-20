@@ -22,3 +22,6 @@ HEADERS  += mainwindow.h \
     tree.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resurces.qrc

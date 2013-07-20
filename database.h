@@ -4,19 +4,18 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QSqlQueryModel>
 
 class Database
 {
 public:
     Database();
     ~Database();
-    QSqlQuery query(QString query);
-    void connect(QString host, QString database, QString user, QString passwd, QString name);
-    void connect();
-    void disconnect();
-private:
-    QSqlDatabase db;
-    QString nameDataBase;
+    static QSqlQuery query(QString query);
+    static void connect(QString host, QString database, QString user, QString passwd, QString name);
+    static void connect();
+    static void disconnect();
+
 
 };
 
